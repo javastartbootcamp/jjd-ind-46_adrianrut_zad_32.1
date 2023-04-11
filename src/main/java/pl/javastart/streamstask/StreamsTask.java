@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class StreamsTask {
 
@@ -34,22 +33,22 @@ public class StreamsTask {
         Double averageMenAge = averageMenAge(users);
         Map<Long, List<Expense>> expensesByUserId = groupExpensesByUserId(users, expenses);
         Map<User, List<Expense>> expensesByUser = groupExpensesByUser(users, expenses);
-        System.out.println(expensesByUserId);
+        System.out.println(expensesByUser);
         
     }
 
     // metoda powinna zwracać listę kobiet (sprawdzając, czy imię kończy się na "a")
     Collection<User> findWomen(Collection<User> users) {
-        return checkName(users).get(true);
+        return splitByGender(users).get(true);
     }
 
     // metoda powinna zwracać średni wiek mężczyzn (sprawdzając, czy imię nie kończy się na "a")
 
     Double averageMenAge(Collection<User> users) {
-        return checkName(users).get(false).stream()
+        return splitByGender(users).get(false).stream()
                 .collect(Collectors.averagingDouble(user -> (double) user.getAge()));
     }
-    Map<Boolean, List<User>> checkName(Collection<User> users) {
+    Map<Boolean, List<User>> splitByGender(Collection<User> users) {
         return users.stream()
                 .collect(Collectors.partitioningBy(user -> user.getName().endsWith("a")));
     }
@@ -64,13 +63,10 @@ public class StreamsTask {
     // metoda powinna zwracać wydatki zgrupowane po użytkowniku
     // podobne do poprzedniego, ale trochę trudniejsze
     Map<User, List<Expense>> groupExpensesByUser(Collection<User> users, List<Expense> expenses) {
-        return null;
+        Map<Long, User> userMap = users.stream()
+                .collect(Collectors.toMap(User::getId, user -> user));
+        return expenses.stream()
+                .collect(Collectors.groupingBy(expense -> userMap.get(expense.getUserId())));
     }
 
-
-
-    Map<String, User> findUserByName(Collection<User> users) {
-        return users.stream()
-                .collect(Collectors.toMap(User::getName, Function.identity()));
-    }
 }

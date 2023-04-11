@@ -68,7 +68,6 @@ public class ExampleTest {
         //given
         users.add(new User(1L,"Anna", 18));
         users.add(new User(2L, "Kinga", 40));
-        users.add(new User(3L,"Monika", 18));
         expenses.add(new Expense(1L, "Buty", new BigDecimal("149.99"), ExpenseType.WEAR));
         expenses.add(new Expense(1L, "Sałatka", new BigDecimal("14.99"), ExpenseType.FOOD));
         expenses.add(new Expense(2L, "Bluza", new BigDecimal("100"), ExpenseType.WEAR));
@@ -77,6 +76,25 @@ public class ExampleTest {
         Map<Long, List<Expense>> longListMap = task.groupExpensesByUserId(users, expenses);
         //then
         assertThat(longListMap.size()).isEqualTo(2);
+        assertThat(longListMap.get(1L).size()).isEqualTo(2);
+        assertThat(longListMap.get(2L).size()).isEqualTo(2);
+    }
+
+    @Test
+    public void shouldFindExpensesForUserName() {
+        //given
+        users.add(new User(1L,"Anna", 18));
+        users.add(new User(2L, "Kinga", 40));
+        expenses.add(new Expense(1L, "Buty", new BigDecimal("149.99"), ExpenseType.WEAR));
+        expenses.add(new Expense(1L, "Sałatka", new BigDecimal("14.99"), ExpenseType.FOOD));
+        expenses.add(new Expense(2L, "Bluza", new BigDecimal("100"), ExpenseType.WEAR));
+        expenses.add(new Expense(2L, "Skarpetki", new BigDecimal("39"), ExpenseType.WEAR));
+        //when
+        Map<User, List<Expense>> userListMap = task.groupExpensesByUser(users, expenses);
+        //then
+        assertThat(userListMap.size()).isEqualTo(2);
+        assertThat(userListMap.get(users.get(0)).size()).isEqualTo(2);
+        assertThat(userListMap.get(users.get(1)).size()).isEqualTo(2);
     }
 
 
